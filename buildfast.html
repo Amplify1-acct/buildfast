@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuildFast — AI Website Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f7f5f0;
+    --surface: #ffffff;
+    --muted: #888580;
+    --border: #e2dfd8;
+    --accent: #e8410a;
+    --accent-light: #fff0ec;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .api-badge {
+    font-size: 12px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* ── API KEY SETUP ── */
+  .api-setup {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .api-setup h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .api-setup p {
+    font-size: 13px;
+    color: #6d5c00;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .api-setup a { color: var(--accent); }
+
+  .api-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .api-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ffe082;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: monospace;
+    background: white;
+    color: var(--ink);
+  }
+
+  .api-row input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+  .btn-save {
+    padding: 10px 20px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-save:hover { background: #333; }
+
+  /* ── INPUT FORM ── */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .input-card label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .input-card textarea {
+    width: 100%;
+    min-height: 130px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+
+  .input-card textarea:focus { outline: none; border-color: var(--ink); background: white; }
+  .input-card textarea::placeholder { color: #bbb; }
+
+  .examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .example-btn {
+    padding: 6px 14px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .example-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+  .generate-btn {
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .generate-btn:hover { background: #c43500; transform: translateY(-1px); }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+  /* ── PROGRESS ── */
+  .progress-section {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .progress-section.visible { display: block; }
+
+  .progress-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .pstep {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    transition: all 0.3s;
+  }
+
+  .pstep.active { background: var(--accent-light); border-color: #f5c4b0; }
+  .pstep.done { background: #f0faf4; border-color: #b7dfca; color: #2d7a4f; }
+
+  .pstep-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .spin { animation: spin 1s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESULTS ── */
+  .results-section { display: none; }
+  .results-section.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  .results-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .reset-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .reset-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .designs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-bottom: 2rem;
+  }
+
+  .design-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .design-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+  .design-card.selected { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+
+  .selected-badge {
+    display: none;
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .design-card.selected .selected-badge { display: block; }
+
+  .preview-frame {
+    width: 100%;
+    height: 320px;
+    border: none;
+    background: #f0f0f0;
+    display: block;
+    pointer-events: none;
+  }
+
+  .card-info {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+  }
+
+  .card-vibe {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── SELECTED PREVIEW ── */
+  .preview-section {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .preview-section.visible { display: block; }
+
+  .preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+  }
+
+  .preview-toolbar span {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .preview-toolbar-btns { display: flex; gap: 8px; }
+
+  .tbtn {
+    padding: 5px 12px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .tbtn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+  .full-preview {
+    width: 100%;
+    height: 680px;
+    border: none;
+    display: block;
+  }
+
+  /* ── DOWNLOAD AREA ── */
+  .download-section {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+
+  .download-section.visible { display: block; }
+
+  .download-section h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .download-section p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .download-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .dl-btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .dl-btn-primary:hover { background: #c43500; }
+
+  .dl-btn-secondary {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+
+  .dl-btn-secondary:hover { background: var(--ink); color: white; }
+
+  /* ── ERROR ── */
+  .error-box {
+    display: none;
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: #cc0000;
+    margin-top: 1rem;
+  }
+
+  .error-box.visible { display: block; }
+
+  .retry-btn {
+    display: block;
+    width: calc(100% - 2rem);
+    margin: 0.75rem auto;
+    padding: 8px;
+    background: var(--paper);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .retry-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+  .preview-failed {
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    color: var(--muted);
+    font-size: 13px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+    font-size: 12px;
+    color: #ccc;
+  }
+
+  /* ── CHAT EDITOR ── */
+  .chat-section {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .chat-section.visible { display: block; }
+  .chat-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chat-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+  .chat-badge { font-size: 11px; background: var(--accent-light); color: var(--accent); border: 1px solid #f5c4b0; border-radius: 20px; padding: 2px 10px; font-weight: 500; }
+  .chat-messages { padding: 1.25rem; min-height: 100px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .chat-msg { display: flex; gap: 10px; align-items: flex-start; animation: fadeIn 0.2s ease; }
+  .chat-msg.user { flex-direction: row-reverse; }
+  .chat-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--paper); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .chat-msg.user .chat-avatar { background: var(--ink); color: white; border-color: var(--ink); }
+  .chat-bubble { max-width: 78%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; background: var(--paper); border: 1px solid var(--border); color: var(--ink); }
+  .chat-msg.user .chat-bubble { background: var(--ink); color: white; border-color: var(--ink); border-radius: 12px 12px 2px 12px; }
+  .chat-msg.ai .chat-bubble { border-radius: 12px 12px 12px 2px; }
+  .chat-bubble.thinking { color: var(--muted); font-style: italic; }
+  .chat-input-row { display: flex; gap: 10px; padding: 1rem 1.25rem; border-top: 1px solid var(--border); background: var(--paper); }
+  .chat-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; background: white; color: var(--ink); }
+  .chat-input:focus { outline: none; border-color: var(--ink); }
+  .chat-input::placeholder { color: #bbb; }
+  .chat-send { padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .chat-send:hover { background: #c43500; }
+  .chat-send:disabled { background: #ccc; cursor: not-allowed; }
+  .chat-suggestions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); background: white; }
+  .chat-suggestion { font-size: 12px; padding: 5px 12px; background: var(--paper); border: 1px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--muted); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .chat-suggestion:hover { background: var(--ink); color: white; border-color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    BuildFast
+  </div>
+  <div class="api-badge" onclick="toggleApiSetup()">⚙ API Key</div>
+</header>
+
+<main>
+
+  <div class="hero">
+    <h1>Your website,<br><em>built in seconds.</em></h1>
+    <p>Describe your business in plain English. Our AI creates three real website designs — pick one and download it.</p>
+  </div>
+
+  <!-- RESUME BANNER -->
+  <div id="resumeBanner" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1.5rem; display:none; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+    <div>
+      <div style="font-weight:500; font-size:0.95rem;">↩ Resume your last session</div>
+      <div id="resumeMeta" style="font-size:12px; color:var(--muted); margin-top:2px;"></div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-save" onclick="resumeSession()" style="background:var(--accent);">Restore designs</button>
+      <button class="btn-save" onclick="clearSession()" style="background:transparent; color:var(--muted); border:1px solid var(--border);">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- API KEY SETUP -->
+  <div class="api-setup" id="apiSetup">
+    <h3>🔑 One-time setup: Add your API key</h3>
+    <p>
+      BuildFast uses the Anthropic Claude API to generate websites. You need a free API key.<br>
+      Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — it takes 2 minutes. Your key is saved only in your browser.
+    </p>
+    <div class="api-row">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." />
+      <button class="btn-save" onclick="saveApiKey()">Save key</button>
+    </div>
+  </div>
+
+  <!-- INPUT FORM -->
+  <div class="input-card">
+    <label>Tell us about your business</label>
+    <textarea id="bizInput" placeholder="e.g. I own a dog grooming salon in Austin called Pawfect. We specialize in nervous dogs and use organic products. I want to attract new customers and let them book appointments online..."></textarea>
+
+    <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">Try an example:</div>
+    <div class="examples">
+      <button class="example-btn" onclick="fillExample('bakery')">Bakery</button>
+      <button class="example-btn" onclick="fillExample('plumber')">Plumber</button>
+      <button class="example-btn" onclick="fillExample('lawyer')">Law firm</button>
+      <button class="example-btn" onclick="fillExample('gym')">Personal trainer</button>
+      <button class="example-btn" onclick="fillExample('restaurant')">Restaurant</button>
+      <button class="example-btn" onclick="fillExample('salon')">Hair salon</button>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="generateWebsites()">
+      <span id="btnText">✦ Generate 3 Website Designs</span>
+    </button>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section" id="progressSection">
+    <div class="progress-title">Building your websites...</div>
+    <div class="progress-sub">Hang tight — this takes about 30–60 seconds</div>
+    <div class="progress-steps">
+      <div class="pstep" id="ps1">
+        <span class="pstep-icon" id="pi1">◌</span>
+        Reading your business description
+      </div>
+      <div class="pstep" id="ps2">
+        <span class="pstep-icon" id="pi2">◌</span>
+        Generating Design 1 — Modern Dark
+      </div>
+      <div class="pstep" id="ps3">
+        <span class="pstep-icon" id="pi3">◌</span>
+        Generating Design 2 — Clean & Light
+      </div>
+      <div class="pstep" id="ps4">
+        <span class="pstep-icon" id="pi4">◌</span>
+        Generating Design 3 — Bold & Vivid
+      </div>
+      <div class="pstep" id="ps5">
+        <span class="pstep-icon" id="pi5">◌</span>
+        Finalizing all three designs
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="resultsSection">
+    <div class="results-header">
+      <h2>Choose your design</h2>
+      <button class="reset-btn" onclick="reset()">← Start over</button>
+    </div>
+    <div class="designs-grid" id="designsGrid"></div>
+
+    <div class="preview-section" id="previewSection">
+      <div class="preview-toolbar">
+        <span id="previewLabel">Full preview</span>
+        <div class="preview-toolbar-btns">
+          <button class="tbtn" onclick="openFullscreen()">Open fullscreen</button>
+          <button class="tbtn" onclick="downloadSelected()">Download HTML</button>
+        </div>
+      </div>
+      <iframe class="full-preview" id="fullPreview"></iframe>
+    </div>
+
+    <!-- CHAT EDITOR -->
+    <div class="chat-section" id="chatSection">
+      <div class="chat-header">
+        <div class="chat-title">✦ Edit with AI</div>
+        <div class="chat-badge">Ask anything</div>
+      </div>
+      <div class="chat-suggestions">
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Change the headline</div>
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Make the button bigger</div>
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Change the color scheme</div>
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Add a phone number</div>
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Make it more modern</div>
+        <div class="chat-suggestion" onclick="chatSuggest(this)">Change the font</div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg ai">
+          <div class="chat-avatar">✦</div>
+          <div class="chat-bubble">Your website is ready! Tell me what you'd like to change — headline, colors, layout, content, anything. I'll update it instantly.</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" type="text" placeholder='e.g. "Change the headline to Make Your Dream Home a Reality"' onkeydown="if(event.key==='Enter') sendChatMessage()" />
+        <button class="chat-send" id="chatSendBtn" onclick="sendChatMessage()">Send →</button>
+      </div>
+    </div>
+
+    <div class="download-section" id="downloadSection">
+      <h3>Ready to download</h3>
+      <p>Your selected website is a complete, working HTML file. Open it in any browser or upload it to any web host.</p>
+      <div class="download-btns">
+        <button class="dl-btn dl-btn-primary" onclick="downloadSelected()">⬇ Download Website HTML</button>
+        <button class="dl-btn dl-btn-secondary" onclick="downloadAll()">Download All 3 Designs</button>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>BuildFast · Powered by Claude AI · Your API key never leaves your browser</footer>
+
+<script>
+  const EXAMPLES = {
+    bakery: "I own a small artisan bakery in Portland called Crumb & Co. We make sourdough bread, croissants, and seasonal pastries using local ingredients. We're open Tuesday–Sunday 7am–2pm. I want to show our menu, tell our story, and let customers sign up for our weekly bread subscription.",
+    plumber: "I run Miller's Plumbing in Phoenix with 4 trucks. We do 24/7 emergency repairs, drain cleaning, water heater installs, and full bathroom remodels. Been in business 18 years. I need a site that shows up on Google when people search for a plumber and lets them request a quote.",
+    lawyer: "I'm a solo family law attorney in Nashville. I help people through divorce, child custody disputes, and adoption. I want a professional website that builds trust, explains my process, shows my credentials, and makes it easy to schedule a free 30-minute consultation.",
+    gym: "I'm Marcus, a certified personal trainer in Brooklyn. I specialize in weight loss and strength training for people over 40. I offer 1-on-1 sessions in-person and online. I want to attract new clients, show transformations, and sell my 12-week coaching program.",
+    restaurant: "We're La Paloma, a family-owned Mexican restaurant in San Antonio. We've been open 25 years and are known for our mole sauce and weekend brunch. Seats 80 inside and 40 on the patio. I want to show our menu, take reservations, and highlight our catering service.",
+    salon: "I own The Strand, a hair salon in Chicago's Wicker Park. We specialize in color correction, balayage, and curly hair cuts. All-organic products. 6 stylists. I want to show our work, let clients book online, and introduce our team."
+  };
+
+  let generatedDesigns = [];
+  let selectedIndex = null;
+  let apiKey = localStorage.getItem('buildfast_apikey') || '';
+
+  // Show/hide API setup
+  function toggleApiSetup() {
+    const el = document.getElementById('apiSetup');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Pre-fill key if saved
+  window.onload = () => {
+    if (apiKey) {
+      document.getElementById('apiKeyInput').value = apiKey;
+      document.getElementById('apiSetup').style.display = 'none';
+    }
+    checkForSession();
+  };
+
+  function saveApiKey() {
+    const val = document.getElementById('apiKeyInput').value.trim();
+    if (!val || val.length < 20) {
+      alert('Please paste a valid API key.');
+      return;
+    }
+    apiKey = val;
+    localStorage.setItem('buildfast_apikey', val);
+    document.getElementById('apiSetup').style.display = 'none';
+    showSuccess('API key saved!');
+  }
+
+  function showSuccess(msg) {
+    const badge = document.querySelector('.api-badge');
+    badge.textContent = '✓ ' + msg;
+    badge.style.background = '#d4edda';
+    badge.style.color = '#155724';
+    badge.style.borderColor = '#c3e6cb';
+    setTimeout(() => {
+      badge.textContent = '⚙ API Key';
+      badge.style.background = '';
+      badge.style.color = '';
+      badge.style.borderColor = '';
+    }, 2000);
+  }
+
+  function fillExample(type) {
+    document.getElementById('bizInput').value = EXAMPLES[type];
+    document.getElementById('bizInput').focus();
+  }
+
+  function setStep(stepNum, status) {
+    const el = document.getElementById('ps' + stepNum);
+    const icon = document.getElementById('pi' + stepNum);
+    el.className = 'pstep ' + status;
+    if (status === 'active') icon.innerHTML = '<span class="spin">⟳</span>';
+    else if (status === 'done') icon.textContent = '✓';
+    else icon.textContent = '◌';
+  }
+
+  function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.textContent = msg;
+    box.classList.add('visible');
+  }
+
+  function hideError() {
+    document.getElementById('errorBox').classList.remove('visible');
+  }
+
+  async function callClaude(prompt) {
+    if (!apiKey) {
+      document.getElementById('apiSetup').style.display = 'block';
+      throw new Error('Please add your API key first.');
+    }
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 6000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.content[0].text;
+  }
+
+  // Each generation randomly picks one palette per design to force variety
+  function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function getDesignPrompts() {
+    // Force different palette every run
+    const dark_accents = [
+      { color: '#e8c547', name: 'gold' },
+      { color: '#00d4aa', name: 'mint' },
+      { color: '#f04e37', name: 'coral' },
+      { color: '#a78bfa', name: 'violet' },
+      { color: '#38bdf8', name: 'sky blue' },
+    ];
+    const warm_accents = [
+      { color: '#2d6a4f', name: 'forest green', bg: '#f0f7f4' },
+      { color: '#b85c38', name: 'terracotta', bg: '#fdf5f0' },
+      { color: '#1d4e89', name: 'navy blue', bg: '#f0f4fa' },
+      { color: '#7b2d8b', name: 'plum', bg: '#f8f0fa' },
+      { color: '#c05621', name: 'burnt orange', bg: '#fdf6f0' },
+    ];
+    const vivid_combos = [
+      { hero: '#0f1c38', accent: '#f56500', accentName: 'orange' },
+      { hero: '#0d2b1e', accent: '#a3e635', accentName: 'lime' },
+      { hero: '#2d1040', accent: '#f0abfc', accentName: 'pink' },
+      { hero: '#1a0a00', accent: '#fbbf24', accentName: 'amber' },
+      { hero: '#0c1a2e', accent: '#22d3ee', accentName: 'cyan' },
+      { hero: '#1a1a2e', accent: '#ff6b9d', accentName: 'hot pink' },
+    ];
+
+    const darkAccent = getRandomItem(dark_accents);
+    const warmAccent = getRandomItem(warm_accents);
+    const vividCombo = getRandomItem(vivid_combos);
+
+    return [
+      {
+        name: 'Modern Dark',
+        vibe: 'Premium, editorial, sophisticated',
+        instruction: `
+PALETTE: Background #0d0d0d. Sections alternate #0d0d0d and #111111.
+ACCENT COLOR: ${darkAccent.color} (${darkAccent.name}). Use ONLY for: CTA buttons, one decorative element on hero, hover states, stat numbers, and accent borders. Do NOT use it for large background sections.
+FONTS: @import "Playfair Display" (700, 900) for headings + "DM Sans" (300, 400) for body.
+
+NAV: Dark background. Logo left in Playfair Display, white. Links right in DM Sans uppercase, font-size:12px, letter-spacing:0.12em, color:#888. CTA button: ${darkAccent.color} background, dark text, sharp corners (border-radius:0).
+
+HERO: 2-column layout. padding:100px 0 80px. Left column (55%): 
+  - Thin 2px ${darkAccent.color} horizontal line (width:50px) above headline
+  - Headline in Playfair Display 900, clamp(2.8rem,5vw,4.8rem), line-height:1.05, color:white
+  - Subtext DM Sans 300, 1.1rem, color:#888, max-width:480px
+  - One sharp CTA button with ${darkAccent.color} background
+  Right column (45%): A real Unsplash photo relevant to this business type. Use: <img src="[HERO_IMAGE]" style="width:100%;height:500px;object-fit:cover;filter:brightness(0.8) contrast(1.1)">. Pick a SPECIFIC keyword for this business (e.g. "attorney", "plumber", "restaurant", "fitness").
+
+SERVICES: 3-column grid on #0d0d0d. Each card: background:#161616, border-top:2px solid ${darkAccent.color}, padding:2rem.
+  Card content: small uppercase label (11px, ${darkAccent.color}, letter-spacing:0.15em), bold service name in Playfair Display, description in DM Sans 300.
+
+ABOUT: Full-width #111 section. Large italic Playfair Display pull-quote centered (clamp(1.4rem,3vw,2.2rem), white). Then 2 paragraphs left below. Stats row: 3-4 large numbers in ${darkAccent.color} Playfair Display + small DM Sans labels.
+
+TESTIMONIALS: 3 cards on #0d0d0d. Each: italic DM Sans 300 quote, "— Name, City" in small caps below.
+
+CONTACT: 2-col. Left: heading + contact info. Right: dark form, inputs background:#1a1a1a, border:1px solid #333, sharp corners. Submit: full-width, ${darkAccent.color} background.
+
+FOOTER: Single dark bar. Logo left, copyright right. border-top:1px solid #222.`
+      },
+      {
+        name: 'Clean & Warm',
+        vibe: 'Friendly, local, trustworthy',
+        instruction: `
+PALETTE: Page background ${warmAccent.bg}. Cards: #ffffff. 
+ACCENT: ${warmAccent.color} (${warmAccent.name}). Use for buttons, links, borders, eyebrow text, icons.
+FONTS: @import "Lora" (400, 600, 700) for headings + "Inter" (300, 400, 500) for body.
+
+NAV: White background, border-bottom:1px solid #e8e3db. Logo in Lora 700. Links Inter 400, color:#444. CTA: ${warmAccent.color} background, white, border-radius:8px.
+
+HERO: 2-column 50/50 split, padding:80px 0. LEFT:
+  - Eyebrow text: Inter 500, 12px, ${warmAccent.color}, uppercase, letter-spacing:0.1em
+  - Headline Lora 700, clamp(2.2rem,4vw,3.6rem), line-height:1.15, color:#1a1a1a
+  - Description Inter 300, color:#555, margin:1.5rem 0 2rem
+  - CTA button + "Learn more →" text link side by side
+  - Trust badges row: "✓ [benefit1]  ✓ [benefit2]  ✓ [benefit3]" in Inter 400, 13px, color:#666
+  RIGHT: Real photo from Unsplash: <img src="[HERO_IMAGE]" style="width:100%;height:100%;min-height:420px;object-fit:cover;border-radius:16px">. Use a specific keyword for this exact business type.
+
+SERVICES: 3 white cards, border:1px solid #e8e3db, border-radius:12px, padding:2rem, box-shadow:0 2px 12px rgba(0,0,0,0.05).
+  Each: colored emoji icon in a ${warmAccent.color} circle (opacity 0.15 bg), Lora 600 service name, Inter 300 description.
+
+ABOUT: 2-col — left: Lora 700 heading + 2 paragraphs. Right: "My Process" — 3 numbered steps in styled cards with ${warmAccent.color} numbered labels.
+
+TESTIMONIALS: 2 large cards. Big opening " in Lora, font-size:5rem, ${warmAccent.color}. Italic Inter quote. Attribution below.
+
+CONTACT: ${warmAccent.bg} background section. 2-col: left has heading + info blocks. Right: white card form, border-radius:12px, padding:2rem. Submit: ${warmAccent.color} background.
+
+FOOTER: Dark footer (#1e1e1e or a dark version of the accent hue). 3 columns: logo+tagline, links, contact. Text color:#aaa.`
+      },
+      {
+        name: 'Bold & Vivid',
+        vibe: 'Graphic, high-impact, modern',
+        instruction: `
+PALETTE: Hero + nav + footer: ${vividCombo.hero}. Body sections: white and #f5f6f7.
+ACCENT: ${vividCombo.accent} (${vividCombo.accentName}). Use for: CTA buttons, numbered labels, one full accent-band section, highlighted words in headlines, stat numbers.
+FONTS: @import "Syne" (700, 800) for headings + "Inter" (400, 500) for body.
+
+NAV: ${vividCombo.hero} background. Logo Syne 800, white. Links Inter 500, white, 14px. CTA: ${vividCombo.accent} background, dark text #111, border-radius:0, font-weight:700.
+
+HERO: padding:90px 0 70px. DO NOT use min-height:100vh. ${vividCombo.hero} background. 2-column layout:
+  LEFT (55%):
+    - Headline Syne 800, clamp(3rem,6vw,5.5rem), line-height:0.95, white, text-transform:uppercase
+    - ONE key word/phrase in headline wrapped in <span style="color:${vividCombo.accent}">
+    - Subtext Inter 400, rgba(255,255,255,0.75), 1.1rem, max-width:500px, margin:1.5rem 0 2.5rem
+    - TWO buttons: primary (${vividCombo.accent} bg, dark text, border-radius:0) + secondary (white outline, white text, border-radius:0)
+    - Stats row: 3 numbers in Syne 800 white, separated by vertical white lines, small Inter labels below each
+  RIGHT (45%): Real Unsplash photo: <img src="[HERO_IMAGE]" style="width:100%;height:100%;min-height:400px;object-fit:cover;mix-blend-mode:luminosity;opacity:0.7">. Pick a SPECIFIC keyword matching this business.
+
+SERVICES: White section, heading left-aligned Syne 800. 3-col grid, no card backgrounds — just border-top:2px solid #e0e0e0, padding:2rem 0.
+  Big ${vividCombo.accent} number (01/02/03) in Syne 800 font-size:2.8rem. Service name Syne 700. Description Inter 400.
+
+ACCENT BAND: Full-width ${vividCombo.accent} background section. Dark text. Bold centered Syne 800 statement headline + one dark CTA button.
+
+ABOUT: White, 2-col. Left: heading + paragraphs. Right: ${vividCombo.hero} card, white text, ${vividCombo.accent} checkmarks for credentials list.
+
+TESTIMONIALS: #f5f6f7 background. Decorative " in ${vividCombo.accent}, Syne 800, font-size:5rem. Centered italic Inter quote. Attribution Inter 500.
+
+CONTACT: White, 2-col. Left: Syne 800 heading (max font-size:2.5rem, not huge) + contact details. Right: form, border:2px solid #e0e0e0, submit ${vividCombo.accent} background, dark text.
+
+FOOTER: ${vividCombo.hero} background. 3-col. Syne 700 headings, Inter 300 body, all white/muted.`
+      }
+    ];
+  }
+
+  const DESIGN_PROMPTS = getDesignPrompts(); // kept for retries — refreshed on each generation
+
+  // Curated Pexels photos by business category - these allow hotlinking from file://
+  const STOCK_PHOTOS = {
+    law:        ['https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg','https://images.pexels.com/photos/3771097/pexels-photo-3771097.jpeg','https://images.pexels.com/photos/8112199/pexels-photo-8112199.jpeg'],
+    medical:    ['https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg','https://images.pexels.com/photos/3259629/pexels-photo-3259629.jpeg','https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg'],
+    restaurant: ['https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg','https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg','https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg'],
+    bakery:     ['https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg','https://images.pexels.com/photos/2135/food-france-morning-breakfast.jpg','https://images.pexels.com/photos/205961/pexels-photo-205961.jpeg','https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg'],
+    fitness:    ['https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg','https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg','https://images.pexels.com/photos/703012/pexels-photo-703012.jpeg'],
+    salon:      ['https://images.pexels.com/photos/3992874/pexels-photo-3992874.jpeg','https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg','https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg'],
+    plumber:    ['https://images.pexels.com/photos/8005397/pexels-photo-8005397.jpeg','https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg','https://images.pexels.com/photos/4491881/pexels-photo-4491881.jpeg'],
+    realtor:    ['https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg','https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg','https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg'],
+    retail:     ['https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg','https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg','https://images.pexels.com/photos/3965557/pexels-photo-3965557.jpeg'],
+    default:    ['https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg','https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg','https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg']
+  };
+
+  function getPhotoUrl(bizDescription, width, height) {
+    const desc = bizDescription.toLowerCase();
+    let category = 'default';
+    if (desc.match(/law|attorney|lawyer|legal/)) category = 'law';
+    else if (desc.match(/doctor|medical|dental|clinic|health/)) category = 'medical';
+    else if (desc.match(/bakery|bread|sourdough|pastry|croissant|cake|baking/)) category = 'bakery';
+    else if (desc.match(/restaurant|food|cafe|pizza|sushi|dining|bistro|eatery/)) category = 'restaurant';
+    else if (desc.match(/gym|fitness|trainer|yoga|crossfit|workout/)) category = 'fitness';
+    else if (desc.match(/salon|hair|beauty|spa|nail|barber/)) category = 'salon';
+    else if (desc.match(/plumb|electric|hvac|contractor|roofing|handyman/)) category = 'plumber';
+    else if (desc.match(/real estate|realtor|property|homes/)) category = 'realtor';
+    else if (desc.match(/shop|store|boutique|retail/)) category = 'retail';
+    const photos = STOCK_PHOTOS[category] || STOCK_PHOTOS.default;
+    const url = photos[Math.floor(Math.random() * photos.length)];
+    return `${url}?auto=compress&cs=tinysrgb&w=${width}&h=${height}&fit=crop`;
+  }
+
+  function buildWebsitePrompt(bizDescription, design) {
+    const photo1 = getPhotoUrl(bizDescription, 800, 700);
+    const photo2 = getPhotoUrl(bizDescription, 1200, 600);
+    const photo3 = getPhotoUrl(bizDescription, 600, 500);
+
+    return `You are a world-class web designer. Build a complete, single-file HTML website for this business. Your output will be shown directly in a browser — it must look stunning.
+
+BUSINESS DESCRIPTION:
+${bizDescription}
+
+DESIGN SYSTEM TO FOLLOW PRECISELY:
+${design.instruction}
+
+STOCK PHOTOS — use these real working image URLs in your design:
+- Hero image: ${photo1}
+- Wide/banner image: ${photo2}  
+- Secondary image: ${photo3}
+Use them as <img> tags with object-fit:cover. Apply CSS filters (brightness, contrast) to match the design mood.
+
+ABSOLUTE RULES:
+1. Start with exactly "<!DOCTYPE html>" — nothing before, no markdown, no backticks, no explanation.
+2. All CSS in a <style> tag in <head>. All JS in a <script> tag before </body>.
+3. Google Fonts: @import inside <style> tag only.
+4. ZERO placeholder content. Write everything specifically for THIS business. Invent plausible details (phone, address) if not provided.
+5. Sections in order: nav → hero → services → about → testimonials → contact form → footer.
+6. Contact form: Full Name, Phone Number, Email Address, Message + submit button.
+7. Mobile responsive: CSS Grid/Flexbox + media queries at 768px.
+8. HERO HEIGHT: Use padding (e.g. padding:100px 0 80px). NEVER min-height:100vh.
+9. USE THE STOCK PHOTOS PROVIDED ABOVE — place them in the hero and at least one other section.
+10. Sharp marketing copy — specific, strong verbs, concrete details from the business description.
+11. The result must look like a $5,000 professional agency website.`;
+  }
+
+  async function generateWebsites() {
+    const biz = document.getElementById('bizInput').value.trim();
+    if (!biz) {
+      showError('Please describe your business first.');
+      return;
+    }
+    if (!apiKey) {
+      document.getElementById('apiSetup').style.display = 'block';
+      showError('Please save your API key before generating.');
+      return;
+    }
+
+    hideError();
+    generatedDesigns = [];
+    selectedIndex = null;
+
+    // Regenerate prompts fresh each time for color variety
+    const freshPrompts = getDesignPrompts();
+
+    // UI state
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('btnText').textContent = 'Generating...';
+    document.getElementById('progressSection').classList.add('visible');
+    document.getElementById('resultsSection').classList.remove('visible');
+    document.getElementById('previewSection').classList.remove('visible');
+    document.getElementById('downloadSection').classList.remove('visible');
+
+    setStep(1, 'active');
+    await sleep(600);
+    setStep(1, 'done');
+
+    try {
+      for (let i = 0; i < 3; i++) {
+        setStep(i + 2, 'active');
+        const prompt = buildWebsitePrompt(biz, freshPrompts[i]);
+        let html = await callClaude(prompt);
+        // Aggressively clean any markdown wrapping
+        html = html.trim();
+        html = html.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+        // Ensure starts with doctype
+        const doctypeIdx = html.toLowerCase().indexOf('<!doctype');
+        if (doctypeIdx > 0) html = html.substring(doctypeIdx);
+        generatedDesigns.push({ ...freshPrompts[i], html });
+        setStep(i + 2, 'done');
+      }
+
+      setStep(5, 'active');
+      await sleep(500);
+      setStep(5, 'done');
+
+      await sleep(400);
+      saveSession();
+      showResults();
+
+    } catch (err) {
+      showError('Error: ' + err.message);
+      document.getElementById('progressSection').classList.remove('visible');
+    } finally {
+      document.getElementById('generateBtn').disabled = false;
+      document.getElementById('btnText').textContent = '✦ Generate 3 Website Designs';
+    }
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function showResults() {
+    document.getElementById('progressSection').classList.remove('visible');
+    document.getElementById('resultsSection').classList.add('visible');
+
+    const grid = document.getElementById('designsGrid');
+    grid.innerHTML = '';
+
+    generatedDesigns.forEach((design, i) => {
+      const card = document.createElement('div');
+      card.className = 'design-card';
+      card.id = 'dcard' + i;
+
+      const badge = document.createElement('div');
+      badge.className = 'selected-badge';
+      badge.textContent = 'Selected';
+
+      // Check if HTML looks valid
+      const isValid = design.html && design.html.toLowerCase().includes('<!doctype');
+
+      let previewEl;
+      if (isValid) {
+        previewEl = document.createElement('iframe');
+        previewEl.className = 'preview-frame';
+        previewEl.title = design.name;
+        card.onclick = () => selectDesign(i);
+      } else {
+        previewEl = document.createElement('div');
+        previewEl.className = 'preview-failed';
+        previewEl.innerHTML = `<span style="font-size:24px">⚠</span><span>Generation incomplete</span>`;
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'retry-btn';
+        retryBtn.textContent = '↺ Retry this design';
+        retryBtn.onclick = (e) => { e.stopPropagation(); retryDesign(i); };
+        card.appendChild(badge);
+        card.appendChild(previewEl);
+        card.appendChild(retryBtn);
+        const info = document.createElement('div');
+        info.className = 'card-info';
+        info.innerHTML = `<div class="card-name">${design.name}</div><div class="card-vibe">${design.vibe}</div>`;
+        card.appendChild(info);
+        grid.appendChild(card);
+        return;
+      }
+
+      const info = document.createElement('div');
+      info.className = 'card-info';
+      info.innerHTML = `<div class="card-name">${design.name}</div><div class="card-vibe">${design.vibe}</div>`;
+
+      card.appendChild(badge);
+      card.appendChild(previewEl);
+      card.appendChild(info);
+      grid.appendChild(card);
+
+      setTimeout(() => { previewEl.srcdoc = design.html; }, 150 * i);
+    });
+  }
+
+  async function retryDesign(i) {
+    const biz = document.getElementById('bizInput').value.trim();
+    const card = document.getElementById('dcard' + i);
+    card.innerHTML = `<div class="preview-failed"><span class="spin" style="font-size:20px">⟳</span><span>Regenerating...</span></div><div class="card-info"><div class="card-name">${DESIGN_PROMPTS[i].name}</div><div class="card-vibe">${DESIGN_PROMPTS[i].vibe}</div></div>`;
+    try {
+      let html = await callClaude(buildWebsitePrompt(biz, DESIGN_PROMPTS[i]));
+      html = html.trim().replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+      const doctypeIdx = html.toLowerCase().indexOf('<!doctype');
+      if (doctypeIdx > 0) html = html.substring(doctypeIdx);
+      generatedDesigns[i] = { ...DESIGN_PROMPTS[i], html };
+      saveSession();
+      showResults();
+    } catch(err) {
+      card.innerHTML = `<div class="preview-failed"><span>⚠ Retry failed</span><span style="font-size:11px">${err.message}</span></div>`;
+    }
+  }
+
+  function selectDesign(i) {
+    selectedIndex = i;
+    document.querySelectorAll('.design-card').forEach((c, j) => {
+      c.className = 'design-card' + (j === i ? ' selected' : '');
+    });
+
+    const design = generatedDesigns[i];
+    const label = document.getElementById('previewLabel');
+    label.textContent = `Previewing: ${design.name}`;
+
+    const fullFrame = document.getElementById('fullPreview');
+    fullFrame.srcdoc = design.html;
+
+    document.getElementById('previewSection').classList.add('visible');
+    document.getElementById('chatSection').classList.add('visible');
+    document.getElementById('downloadSection').classList.add('visible');
+
+    // Reset chat on new selection
+    document.getElementById('chatMessages').innerHTML = `<div class="chat-msg ai"><div class="chat-avatar">✦</div><div class="chat-bubble">Your <strong>${design.name}</strong> website is ready! Tell me what you'd like to change — headline, colors, layout, content, anything. I'll update it instantly.</div></div>`;
+
+    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── CHAT EDITOR ──
+  let chatHistory = [];
+
+  function chatSuggest(el) {
+    document.getElementById('chatInput').value = el.textContent;
+    document.getElementById('chatInput').focus();
+  }
+
+  function addChatMsg(role, text, isThinking) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `chat-msg ${role}`;
+    div.innerHTML = `
+      <div class="chat-avatar">${role === 'user' ? 'You' : '✦'}</div>
+      <div class="chat-bubble${isThinking ? ' thinking' : ''}">${text}</div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg || selectedIndex === null) return;
+
+    input.value = '';
+    document.getElementById('chatSendBtn').disabled = true;
+
+    addChatMsg('user', msg);
+    const thinkingEl = addChatMsg('ai', 'Updating your website...', true);
+
+    const currentHtml = generatedDesigns[selectedIndex].html;
+
+    const prompt = `You are editing a website. The user wants to make this change: "${msg}"
+
+Here is the current complete HTML of the website:
+${currentHtml}
+
+Instructions:
+1. Make ONLY the change the user requested. Do not redesign or rewrite anything else.
+2. Return the COMPLETE updated HTML file — starting with <!DOCTYPE html>.
+3. No markdown, no explanation, no backticks. Just the raw HTML.
+4. Keep all existing styles, content, and structure intact except for the requested change.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 6000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || 'API error');
+
+      let newHtml = data.content[0].text.trim();
+      newHtml = newHtml.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+      const doctypeIdx = newHtml.toLowerCase().indexOf('<!doctype');
+      if (doctypeIdx > 0) newHtml = newHtml.substring(doctypeIdx);
+
+      // Update the design
+      generatedDesigns[selectedIndex].html = newHtml;
+      document.getElementById('fullPreview').srcdoc = newHtml;
+      saveSession();
+
+      // Replace thinking bubble with success
+      thinkingEl.querySelector('.chat-bubble').classList.remove('thinking');
+      thinkingEl.querySelector('.chat-bubble').textContent = '✓ Done! Your website has been updated. Want to change anything else?';
+
+    } catch(err) {
+      thinkingEl.querySelector('.chat-bubble').classList.remove('thinking');
+      thinkingEl.querySelector('.chat-bubble').textContent = 'Sorry, something went wrong: ' + err.message;
+    }
+
+    document.getElementById('chatSendBtn').disabled = false;
+    document.getElementById('chatInput').focus();
+  }
+
+  function downloadSelected() {
+    if (selectedIndex === null) { alert('Please select a design first.'); return; }
+    downloadDesign(selectedIndex);
+  }
+
+  function downloadAll() {
+    generatedDesigns.forEach((_, i) => downloadDesign(i));
+  }
+
+  function downloadDesign(i) {
+    const design = generatedDesigns[i];
+    const blob = new Blob([design.html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'buildfast-' + design.name.toLowerCase().replace(/\s+/g, '-') + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function openFullscreen() {
+    if (selectedIndex === null) { alert('Please select a design first.'); return; }
+    const win = window.open('', '_blank');
+    win.document.write(generatedDesigns[selectedIndex].html);
+    win.document.close();
+  }
+
+  // ── SESSION STORAGE ──
+  const SESSION_KEY = 'buildfast_session';
+
+  function saveSession() {
+    try {
+      const data = {
+        savedAt: new Date().toISOString(),
+        bizDescription: document.getElementById('bizInput').value.trim(),
+        designs: generatedDesigns.map(d => ({ name: d.name, vibe: d.vibe, html: d.html }))
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    } catch(e) {
+      // Storage full or unavailable — silently skip
+    }
+  }
+
+  function loadSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch(e) { return null; }
+  }
+
+  function clearSession() {
+    localStorage.removeItem(SESSION_KEY);
+    document.getElementById('resumeBanner').style.display = 'none';
+  }
+
+  function resumeSession() {
+    const data = loadSession();
+    if (!data || !data.designs || data.designs.length === 0) return;
+    document.getElementById('bizInput').value = data.bizDescription || '';
+    generatedDesigns = data.designs.map((d, i) => ({ ...DESIGN_PROMPTS[i], ...d }));
+    document.getElementById('resumeBanner').style.display = 'none';
+    showResults();
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function checkForSession() {
+    const data = loadSession();
+    if (!data || !data.designs || data.designs.length === 0) return;
+    const banner = document.getElementById('resumeBanner');
+    const meta = document.getElementById('resumeMeta');
+    const savedAt = new Date(data.savedAt);
+    const ago = timeSince(savedAt);
+    const biz = data.bizDescription ? `"${data.bizDescription.substring(0, 60)}${data.bizDescription.length > 60 ? '…' : ''}"` : 'a business';
+    meta.textContent = `Saved ${ago} · ${biz}`;
+    banner.style.display = 'flex';
+  }
+
+  function timeSince(date) {
+    const secs = Math.floor((new Date() - date) / 1000);
+    if (secs < 60) return 'just now';
+    if (secs < 3600) return Math.floor(secs / 60) + ' min ago';
+    if (secs < 86400) return Math.floor(secs / 3600) + ' hrs ago';
+    return Math.floor(secs / 86400) + ' days ago';
+  }
+
+  function reset() {
+    generatedDesigns = [];
+    selectedIndex = null;
+    chatHistory = [];
+    document.getElementById('bizInput').value = '';
+    document.getElementById('resultsSection').classList.remove('visible');
+    document.getElementById('progressSection').classList.remove('visible');
+    document.getElementById('previewSection').classList.remove('visible');
+    document.getElementById('chatSection').classList.remove('visible');
+    document.getElementById('downloadSection').classList.remove('visible');
+    document.getElementById('resumeBanner').style.display = 'none';
+    clearSession();
+    hideError();
+    [1,2,3,4,5].forEach(n => setStep(n, ''));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
